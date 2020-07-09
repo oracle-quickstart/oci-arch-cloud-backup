@@ -1,0 +1,112 @@
+## Copyright © 2020, Oracle and/or its affiliates.
+## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
+
+    title: "Cloud Backup"
+    stackDescription: Deploy the required infrastructure to use Object storage for backup
+    schemaVersion: 1.1.0
+    version: "20190404"
+    locale: "en"
+
+    variableGroups:
+    - title: General Configuration
+      visible: false
+      variables:
+      - tenancy_ocid
+
+    - title: General Configuration
+      visible: true
+      variables:
+      - compartment_ocid
+      - region
+
+    - title: Bucket Configuration
+      visible: true
+      variables:
+      - bucket_name
+      - bucket_access_type
+      - bucket_storage_tier
+ 
+    - title: IAM Configuration
+      visible: true
+      variables:
+      - group_name
+      - group_description
+      - policy_name
+      - policy_description
+      - backupuser_name
+
+    variables:
+
+      compartment_ocid:
+        type: oci:identity:compartment:id
+        required: true
+        title: Compartment
+        description: Compartment where you want to create the solution resources
+
+      region:
+        type: oci:identity:region:name
+        required: true
+        title: Region
+        description: Region where you want to deploy the resources defined by this stack
+
+      bucket_name:
+        type: string
+        required: true
+        title: "Bucket Name"
+        description: "Name of the bucket"
+        default: "Mybucket"
+
+      bucket_access_type:
+        type: enum
+        required: true
+        title: "Access Type"
+        description: "Choose the type of access for the backup bucket"
+        enum:
+          - "NoPublicAccess"
+          - "Public"
+        default: "NoPublicAccess"
+
+      bucket_storage_tier:
+        type: enum
+        required: true
+        title: "Storage Tier"
+        description: "Select the tier for the backup bucket"
+        enum:
+          - "Standard"
+          - "Archive"
+        default: "Standard"
+
+      group_name:
+        type: string
+        required: true
+        title: "Group Name"
+        description: "Name of the backup group"
+        default: "Backup_Group"
+
+      group_description:
+        type: string
+        required: true
+        title: "Group Description"
+        description: "Backup Group Description"
+        default: "Backup_Group"
+
+      policy_name:
+        type: string
+        required: true
+        title: "Policy Name"
+        description: "Backup Policy name"
+        default: "backuppolicy"
+
+      policy_description:
+        type: string
+        required: true
+        title: "Policy Description"
+        description: "Description of the policy"
+        default: "Policy that grants the necessary backup rights"
+
+      backupuser_name:
+        type: string
+        required: true
+        title: "Username"
+        description: "Username of the account used for backup"
+        default: "BackupUser"
