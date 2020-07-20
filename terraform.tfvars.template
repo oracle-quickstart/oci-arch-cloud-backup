@@ -1,0 +1,26 @@
+# Authentication
+tenancy_ocid         = "<tenancy_ocid>"
+user_ocid            = "<user_ocid>"
+fingerprint          = "<finger_print>"
+private_key_path     = "<pem_private_key_path>"
+
+# SSH Keys
+ssh_public_key  = "<public_ssh_key_path>"
+
+# Region
+region = "<oci_region>"
+
+# Compartment
+compartment_ocid = "<compartment_ocid>"
+
+# if the following lines are left commented, terraform will prompt for the values 
+
+# bucket_name = "Mybucket"
+# bucket_access_type = "NoPublicAccess" 
+# bucket_storage_tier = "Standard"
+
+# group_name = "Backup_Group"
+# group_description = "group_description"
+# policy_name = "backuppolicy"
+# policy_description = "policy description"
+# backupuser_name = "BackupUser"
