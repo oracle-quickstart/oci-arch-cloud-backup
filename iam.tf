@@ -9,6 +9,7 @@ resource "oci_identity_group" "backup_group" {
 }
 
 resource "oci_identity_policy" "backup_policy" {
+  depends_on     = [oci_identity_group.backup_group]
   provider       = oci.homeregion
   compartment_id = var.tenancy_ocid
   description    = var.policy_description

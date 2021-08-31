@@ -8,7 +8,8 @@ resource "null_resource" "exec_rclone_listremotes" {
     oci_identity_policy.backup_policy,
     oci_identity_user.backup_user,
     oci_identity_user_group_membership.backup_user_group_membership,
-  oci_identity_customer_secret_key.backup_user_customer_secret_key]
+    oci_identity_customer_secret_key.backup_user_customer_secret_key,
+  oci_identity_tag.ArchitectureCenterTag]
 
   provisioner "local-exec" {
     command = "rclone listremotes"
