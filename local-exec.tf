@@ -24,7 +24,7 @@ resource "null_resource" "exec_rclone_listremotes" {
 }
 
 resource "null_resource" "exec_rclone_transfer" {
-  depends_on = [null_resource.exec_rclone]
+  depends_on = [null_resource.exec_rclone_listremotes]
 
   provisioner "local-exec" {
     command = "rclone --verbose --cache-workers 64 --transfers 64 --retries 32 copy $SOURCE oci:${var.bucket_name}"
