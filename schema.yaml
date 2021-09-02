@@ -1,8 +1,8 @@
-## Copyright © 2020, Oracle and/or its affiliates.
+## Copyright © 2021, Oracle and/or its affiliates.
 ## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
 
-    title: "Cloud Backup"
-    stackDescription: Deploy the required infrastructure to use Object storage for backup
+    title: "Cloud Backup with RClone"
+    stackDescription: "Deploy the required infrastructure to use Object storage for backup with RClone"
     schemaVersion: 1.1.0
     version: "20190404"
     locale: "en"
@@ -12,30 +12,67 @@
       visible: false
       variables:
       - tenancy_ocid
+      - source_file
+      - lifecycle_policy_archive_rule_name
+      - lifecycle_policy_abort_rule_name
 
-    - title: General Configuration
+    - title: Required Configuration
       visible: true
       variables:
       - compartment_ocid
       - region
+      - bucket_name
+      - lifecycle_policy_archive_rule_is_enabled
+      - lifecycle_policy_abort_rule_is_enabled
+      - show_advanced
 
     - title: Bucket Configuration
-      visible: true
+      visible: 
+        and:
+          - show_advanced
       variables:
-      - bucket_name
       - bucket_access_type
       - bucket_storage_tier
  
+    - title: OSS Bucket Lifecycle Archive Policy Configuration
+      visible: 
+        and:
+          - show_advanced
+      variables:
+      - lifecycle_policy_archive_rule_time_amount
+      - lifecycle_policy_archive_rule_time_unit
+      - lifecycle_policy_archive_rule_inclusion_prefixes
+      - lifecycle_policy_archive_rule_target
+
+    - title: OSS Bucket Lifecycle Abort Policy Configuration
+      visible: 
+        and:
+          - show_advanced
+      variables:
+      - lifecycle_policy_abort_rule_time_amount
+      - lifecycle_policy_abort_rule_time_unit
+      - lifecycle_policy_abort_rule_target
+
     - title: IAM Configuration
-      visible: true
+      visible: 
+        and:
+          - show_advanced
       variables:
       - group_name
       - group_description
       - policy_name
       - policy_description
       - backupuser_name
+      - secret_key_name
 
     variables:
+
+      show_advanced:
+        type: boolean
+        title: "Show advanced options?"
+        description: "Shows advanced options."
+        visible: true
+        default: false
 
       compartment_ocid:
         type: oci:identity:compartment:id
@@ -54,7 +91,6 @@
         required: true
         title: "Bucket Name"
         description: "Name of the bucket"
-        default: "Mybucket"
 
       bucket_access_type:
         type: enum
@@ -81,32 +117,133 @@
         required: true
         title: "Group Name"
         description: "Name of the backup group"
-        default: "Backup_Group"
 
       group_description:
         type: string
         required: true
         title: "Group Description"
         description: "Backup Group Description"
-        default: "Backup_Group"
 
       policy_name:
         type: string
         required: true
         title: "Policy Name"
         description: "Backup Policy name"
-        default: "backuppolicy"
 
       policy_description:
         type: string
         required: true
         title: "Policy Description"
         description: "Description of the policy"
-        default: "Policy that grants the necessary backup rights"
 
       backupuser_name:
         type: string
         required: true
         title: "Username"
         description: "Username of the account used for backup"
-        default: "BackupUser"
+
+      secret_key_name:
+        type: string
+        required: true
+        title: "Secret Key Name"
+        description: "Secret Key Name for the account used for backup"
+        default: "IAMUserSecretKey4OSS"
+
+
+      lifecycle_policy_archive_rule_is_enabled:
+        type: boolean
+        title: "Enable Bucket Archive Lifecycle Policy Rule?"
+        description: "Check if you want to enable Bucket Archive Lifecycle Policy Rule."
+        required: true
+        visible: true
+        default: true
+
+      lifecycle_policy_archive_rule_time_amount:
+        visible: 
+          and:
+            - lifecycle_policy_archive_rule_is_enabled
+        type: number
+        minimum: 1
+        maximum: 128
+        multipleOf: 1
+        default: 10
+        required: false
+        title: "Archive - Time Amount"
+        description: "Bucket Archive Lifecycle Polocy Rule - Time Amount"
+
+      lifecycle_policy_archive_rule_time_unit:
+        visible: 
+          and:
+            - lifecycle_policy_archive_rule_is_enabled
+        type: enum
+        title: "Archive - Time Unit"
+        description: "Bucket Archive Lifecycle Polocy Rule - Time Amount"
+        enum:
+          - "DAYS"
+          - "YEARS"
+        default: "DAYS"
+
+      lifecycle_policy_archive_rule_inclusion_prefixes:
+        visible: 
+          and:
+            - lifecycle_policy_archive_rule_is_enabled
+        type: string
+        title: "Archive - Inclusion Prefix"
+        description: "Archive - Inclusion Prefix"
+
+      lifecycle_policy_archive_rule_target:
+        visible: 
+          and:
+            - lifecycle_policy_archive_rule_is_enabled
+        type: enum
+        title: "Archive - Target"
+        description: "Bucket Archive Lifecycle Polocy Rule - Target"
+        enum:
+          - "objects"
+          - "multipart-uploads"
+        default: "objects"        
+
+      lifecycle_policy_abort_rule_is_enabled:
+        type: boolean
+        title: "Enable Bucket Abort Lifecycle Policy Rule?"
+        description: "Check if you want to enable Bucket Abort Lifecycle Policy Rule."
+        visible: true
+        default: true
+        required: true
+
+      lifecycle_policy_abort_rule_time_amount:
+        visible: 
+          and:
+            - lifecycle_policy_abort_rule_is_enabled
+        type: number
+        minimum: 1
+        maximum: 128
+        multipleOf: 1
+        default: 10
+        title: "Abort - Time Amount"
+        description: "Bucket Abort Lifecycle Polocy Rule - Time Amount"
+
+      lifecycle_policy_abort_rule_time_unit:
+        visible: 
+          and:
+            - lifecycle_policy_abort_rule_is_enabled
+        type: enum
+        title: "Abort - Time Unit"
+        description: "Bucket Abort Lifecycle Polocy Rule - Time Unit"
+        enum:
+          - "DAYS"
+          - "YEARS"
+        default: "DAYS"
+
+      lifecycle_policy_abort_rule_target:
+        visible: 
+          and:
+            - lifecycle_policy_abort_rule_is_enabled
+        type: enum
+        title: "Abort - Target"
+        description: "Bucket Abort Lifecycle Polocy Rule - Target"
+        enum:
+          - "objects"
+          - "multipart-uploads"
+        default: "multipart-uploads" 
+
