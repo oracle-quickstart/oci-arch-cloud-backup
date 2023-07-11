@@ -64,7 +64,7 @@ The resource-manager directory has a zip file ready to be used with Resource Man
 ![](./images/architecture-deploy-cloud-bakcup.png)
 
 
-## Reference Archirecture
+## Reference Architecture
 
-- [Back up your on-premises data to the cloud](https://docs.us.oracle.com/en/solutions/onprem-to-cloud-backup/index.html)
+- [Back up your on-premises data to the cloud](https://docs.oracle.com/en/solutions/onprem-to-cloud-backup/index.html)
 `
